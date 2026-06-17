@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hudson Fire Department</title>
+    <link rel="icon" href="hfdlogo.jpg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        /* HEADER */
+        header {
+            background-color: #b30000;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            letter-spacing: 2px;
+        }
+
+        /* NAVIGATION */
+        nav {
+            background-color: #222;
+            padding: 12px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #ff4d4d;
+        }
+
+        /* WEATHER BAR */
+        .weather-bar {
+            background: #222;
+            color: white;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 12px;
+            font-size: 16px;
+            flex-wrap: wrap;
+        }
+
+        .weather-bar span {
+            min-width: 200px;
+        }
+
+        /* BURN BAN BANNER */
+        .burn-banner {
+            background: #222;
+            color: white;
+            text-align: center;
+            font-size: 18px;
+            padding: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .burn-active {
+            background: #cc0000;
+            animation: burnFlash 1s infinite;
+        }
+
+        @keyframes burnFlash {
+            0% { background: #8b0000; }
+            50% { background: #ff0000; }
+            100% { background: #8b0000; }
+        }
+
+        /* HERO BANNER */
+        .hero {
+            height: 350px;
+            background-image: url("hudsonfiredept.jpg");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .hero h2 {
+            background: rgba(179, 0, 0, 0.85);
+            padding: 20px 40px;
+            border-radius: 8px;
+            font-size: 2em;
+            position: relative;
+            z-index: 2;
+            color: white;
+        }
+
+        /* MAIN SECTIONS */
+        section {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        h2 {
+            color: #b30000;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            color: #b30000;
+            margin-bottom: 10px;
+        }
+
+        /* SERVICES GRID */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .service-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #b30000;
+        }
+
+        .service-card h3 {
+            margin-top: 0;
+        }
+
+        /* STATS GRID */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .statbox {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .statbox h3 {
+            color: #b30000;
+            font-size: 2.5em;
+            margin: 0 0 10px 0;
+        }
+
+        .statbox p {
+            color: #666;
+            font-weight: bold;
+        }
+
+        /* ABOUT SECTION */
+        .about-flex {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-text {
+            flex: 1.5;
+            line-height: 1.8;
+        }
+
+        .about-image {
+            flex: 1;
+        }
+
+        .about-image img {
+            border-radius: 8px;
+            border: 5px solid #b30000;
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* FIRE DANGER GAUGE */
+        .gauge-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .gauge {
+            width: 250px;
+            margin: 20px auto;
+        }
+
+        .gauge-body {
+            width: 100%;
+            height: 0;
+            padding-bottom: 50%;
+            background: #ddd;
+            position: relative;
+            border-top-left-radius: 250px;
+            border-top-right-radius: 250px;
+            overflow: hidden;
+        }
+
+        .gauge-fill {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: green;
+            transform-origin: center top;
+            transform: rotate(0.25turn);
+            transition: transform 1s ease-out, background 1s;
+        }
+
+        .gauge-cover {
+            width: 80%;
+            height: 80%;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+            padding: 10px;
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+        }
+
+        /* RADAR SECTION */
+        .radar-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            margin: 30px 0;
+        }
+
+        .radar-container iframe {
+            border: 4px solid #222;
+            border-radius: 8px;
+            width: 100%;
+            height: 550px;
+        }
+
+        /* INFO GRID */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .info-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .info-card h3 {
+            margin-top: 0;
+        }
+
+        .info-card a {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #b30000;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .info-card a:hover {
+            background-color: #8b0000;
+        }
+
+        /* CONTACT CARD */
+        .contact-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #b30000;
+        }
+
+        .contact-card h3 {
+            margin-top: 0;
+        }
+
+        .contact-card p {
+            line-height: 1.8;
+            margin: 10px 0;
+        }
+
+        .contact-card strong {
+            color: #b30000;
+        }
+
+        .contact-card a {
+            color: #b30000;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .contact-card a:hover {
+            text-decoration: underline;
+        }
+
+        /* MISSION STATEMENT */
+        .mission-section {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        .mission-section p {
+            margin: 15px 0;
+            font-size: 1.1em;
+        }
+
+        .mission-motto {
+            font-size: 1.8em;
+            color: #222;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 8px;
+        }
+
+        /* FOOTER */
+        footer {
+            background-color: #222;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 60px;
+        }
+
+        footer p {
+            margin: 8px 0;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            header p {
+                font-size: 0.9em;
+            }
+
+            nav a {
+                margin: 0 8px;
+                font-size: 0.9em;
+            }
+
+            .weather-bar {
+                gap: 20px;
+            }
+
+            .weather-bar span {
+                min-width: 150px;
+            }
+
+            .about-flex {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .hero h2 {
+                font-size: 1.3em;
+                padding: 15px 25px;
+            }
+
+            .hero {
+                height: 250px;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            .statbox h3 {
+                font-size: 2em;
+            }
+        }
+		/* FIRE ALERT TICKER */
+
+.ticker-container {
+    overflow: hidden;
+    background: #111;
+    border-top: 3px solid red;
+    border-bottom: 3px solid red;
+    position: relative;
+}
+
+.ticker-track {
+    display: inline-block;
+    white-space: nowrap;
+    animation: scroll 120s linear infinite;
+}
+
+.ticker-track span {
+    display: inline-block;
+    margin-right: 80px;
+    color: #ff4444;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+@keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+.flash {
+    color: red;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Hudson Fire Department</h1>
+    <p>Protecting Lives • Property • Community</p>
+</header>
+
+<nav>
+    <a href="HudsonFD.html">Home</a>
+    <a href="History.html">History</a>
+    <a href="Burn Report.html">Controlled Burns</a>
+    <a href="FundraisersPageDone.html">Fundraisers</a>
+    <a href="Staff.html">Staff</a>
+    <a href="Apply Now!.html">Apply Now</a>
+</nav>
+<div class="ticker-container">
+    <div id="fireTicker" class="ticker-track"></div>
+</div>
+
+<!-- WEATHER & BURN BAN INFO -->
+<div class="weather-bar" id="weatherBar">
+    <span id="weatherTemp">Loading temperature...</span>
+    <span id="weatherWind">Loading wind...</span>
+    <span id="weatherHumidity">Loading conditions...</span>
+</div>
+
+<div class="burn-banner" id="burnBanner">
+    Checking Regional Burn Conditions...
+</div>
+
+<!-- HERO BANNER -->
+<div class="hero">
+    <h2>Serving Our Community Since 1906</h2>
+</div>
+
+<!-- DEPARTMENT ACTIVITY -->
+<section>
+    <h2>📊 Department Activity</h2>
+    <div class="stats">
+        <div class="statbox">
+            <h3>37</h3>
+            <p>Calls in 2025</p>
+        </div>
+        <div class="statbox">
+            <h3>5</h3>
+            <p>Medical Assists</p>
+        </div>
+        <div class="statbox">
+            <h3>5</h3>
+            <p>Mutual Aid</p>
+        </div>
+        <div class="statbox">
+            <h3>720</h3>
+            <p>Training Hours</p>
+        </div>
+    </div>
+</section>
+
+<!-- OUR SERVICES -->
+<section>
+    <h2>🚒 Our Services</h2>
+    <div class="services-grid">
+        <div class="service-card">
+            <h3>Fire Suppression</h3>
+            <p>Rapid response to structure fires and hazardous materials incidents.</p>
+        </div>
+        <div class="service-card">
+            <h3>Emergency Medical Services (EMS)</h3>
+            <p>Professional emergency medical response and life-saving interventions.</p>
+        </div>
+        <div class="service-card">
+            <h3>Rescue Operations</h3>
+            <p>Technical rescue for vehicle accidents, water rescue, and other emergencies.</p>
+        </div>
+        <div class="service-card">
+            <h3>Fire Safety Inspections</h3>
+            <p>Regular inspections to ensure code compliance and community safety.</p>
+        </div>
+        <div class="service-card">
+            <h3>Community Education</h3>
+            <p>Fire safety training and public awareness programs for all ages.</p>
+        </div>
+        <div class="service-card">
+            <h3>Controlled Burns</h3>
+            <p>Professional management of controlled burns for land management.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT US -->
+<section>
+    <h2>ℹ️ About Us</h2>
+    <div class="about-flex">
+        <div class="about-text">
+            <p>The Hudson Fire Department is dedicated to protecting our community through emergency response, fire prevention, and public education. Our trained firefighters serve with honor, courage, and commitment. We serve the town of Hudson, South Dakota and aid the surrounding areas.</p>
+            <br>
+            <p>We operate as part of the South Dakota Firefighters Association, under Southeast District #1. We proudly serve our state and perform our sworn duties to respond to emergencies, protect people and property, and fight fires.</p>
+        </div>
+        <div class="about-image">
+            <img alt="HFD Group" src="state11.jpg" style="width: 300px; height: 350px;">
+        </div>
+    </div>
+</section>
+
+<!-- FIRE DANGER GAUGE -->
+<section class="gauge-container">
+    <h2>🔥 Fire Danger Level</h2>
+    <div class="gauge">
+        <div class="gauge-body">
+            <div class="gauge-fill" id="gaugeFill"></div>
+            <div class="gauge-cover" id="gaugeLabel">Loading</div>
+        </div>
+    </div>
+</section>
+
+<!-- WEATHER RADAR -->
+<section class="radar-container">
+    <h2>📡 Siouxland Live Radar (NOAA)</h2>
+    <iframe 
+        src="https://radar.weather.gov/?settings=v1_eyJhZ2VuZGEiOiJzdGF0aW9uIiwic3RhdGlvbiI6IktTSVgiLCJsb2NhdGlvbiI6Wy00NS45LDQzLjNdLCJ6b29tIjo3fQ=="
+        frameborder="0"
+        allow="geolocation">
+    </iframe>
+</section>
+
+<!-- COMMUNITY INFORMATION -->
+<section>
+    <h2>📋 Community Information</h2>
+    <div class="info-grid">
+        <div class="info-card">
+            <h3>🔥 Controlled Burns</h3>
+            <p>Planning a controlled burn? Notify the department beforehand to avoid emergency response.</p>
+            <a href="Burn Report.html">Report a Burn</a>
+        </div>
+        <div class="info-card">
+            <h3>👨‍🚒 Join Our Department</h3>
+            <p>We are always looking for dedicated volunteers and firefighters to join our team.</p>
+            <a href="Apply Now!.html">Apply Now</a>
+        </div>
+        <div class="info-card">
+            <h3>💰 Support Our Fundraisers</h3>
+            <p>Community fundraisers help support equipment, training, and community programs.</p>
+            <a href="FundraisersPageDone.html">View Events</a>
+        </div>
+    </div>
+</section>
+
+<!-- MISSION STATEMENT -->
+<section class="mission-section">
+    <h2>🎯 Mission Statement</h2>
+    <p>Our mission is to protect and serve our community, saving lives and preventing property damage, through proactive fire prevention and emergency medical services.</p>
+    <p>Those we serve will be treated with compassion and integrity, and their care and protection will be our utmost priority.</p>
+    <div class="mission-motto">Our community, our protection.</div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section>
+    <h2>📞 Contact Us</h2>
+    <div class="contact-card">
+        <p><strong>Emergency:</strong> Dial 911</p>
+        <p><strong>Non-Emergency:</strong> 605--370-2498</p>
+        <p><strong>Email:</strong> <a href="mailto:hudsonsdfire@gmail.com">hudsonsdfire@gmail.com</a></p>
+        <p><strong>Address:</strong> 310 4th St, Hudson, SD 57034</p>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 Hudson Fire Department. All Rights Reserved.</p>
+    <p>Emergency: Dial 911</p>
+</footer>
+
+<!-- WEATHER & FIRE DATA SCRIPTS -->
+<script>
+/* FIRE ALERT TICKER */
+
+const NWS_ALERTS_API = "https://api.weather.gov/alerts/active";
+
+let knownAlerts = new Set();
+
+function ensureTickerWidth(ticker) {
+    const minWidth = document.documentElement.clientWidth * 2;
+
+    while (ticker.scrollWidth < minWidth) {
+        ticker.innerHTML += ticker.innerHTML;
+    }
+}
+
+async function loadFires() {
+
+    const ticker = document.getElementById("fireTicker");
+
+    ticker.innerHTML =
+        "<span style='color:#ffaa00;'>🔄 Loading fire alerts...</span>";
+
+    try {
+
+        let allAlerts = [];
+
+        const responses = await Promise.all([
+            fetch(NWS_ALERTS_API + "?area=SD"),
+            fetch(NWS_ALERTS_API + "?area=IA"),
+            fetch(NWS_ALERTS_API + "?area=NE")
+        ]);
+
+        const data = await Promise.all(
+            responses.map(r => r.json())
+        );
+
+        data.forEach(regionData => {
+
+            if (!regionData.features) return;
+
+            regionData.features.forEach(alert => {
+
+                const props = alert.properties;
+
+                const event = props.event || "";
+                const headline = props.headline || "";
+                const areaDesc = props.areaDesc || "";
+
+                if (
+                    event.includes("Red Flag") ||
+                    event.includes("Fire") ||
+                    headline.includes("BURN BAN") ||
+                    headline.includes("FIRE")
+                ) {
+
+                    const alertId = event + areaDesc;
+
+                    const isNew = !knownAlerts.has(alertId);
+
+                    knownAlerts.add(alertId);
+
+                    allAlerts.push({
+                        event,
+                        areaDesc,
+                        isNew,
+                        color: event.includes("Red Flag")
+                            ? "red"
+                            : "orange"
+                    });
+                }
+            });
+        });
+
+        if (allAlerts.length === 0) {
+
+            ticker.innerHTML =
+                "<span>✅ No active fire alerts for SD / IA / NE</span>" +
+                "<span style='margin-left:80px;'>🌤 Conditions safe for controlled burns (verify locally)</span>";
+
+            ensureTickerWidth(ticker);
+            return;
+        }
+
+        let content = "";
+
+        allAlerts.forEach(alert => {
+
+            const newBadge = alert.isNew
+                ? '<span class="flash">🚨 NEW</span>'
+                : '';
+
+            content += `
+                <span>
+                    🔥 <strong style="color:${alert.color}">
+                    ${alert.event}
+                    </strong>
+                    — ${alert.areaDesc}
+                    ${newBadge}
+                </span>
+            `;
+        });
+
+        ticker.innerHTML = content;
+
+        ensureTickerWidth(ticker);
+
+    } catch (error) {
+
+        ticker.innerHTML =
+            "<span>⚠️ Fire data unavailable - check manually</span>";
+
+        ensureTickerWidth(ticker);
+    }
+}
+
+loadFires();
+
+setInterval(loadFires, 300000);
+async function loadWeather() {
+    try {
+        let url = "https://api.weather.gov/points/43.30,-96.57";
+        let res = await fetch(url);
+        let data = await res.json();
+        
+        let forecastURL = data.properties.forecastHourly;
+        let forecastRes = await fetch(forecastURL);
+        let forecastData = await forecastRes.json();
+        
+        let current = forecastData.properties.periods[0];
+        
+        document.getElementById("weatherTemp").textContent = 
+            "🌡 Temp: " + current.temperature + "°F";
+        
+        document.getElementById("weatherWind").textContent = 
+            "🌬 Wind: " + current.windSpeed + " " + current.windDirection;
+        
+        document.getElementById("weatherHumidity").textContent = 
+            "💧 Conditions: " + current.shortForecast;
+    } catch (error) {
+        console.log("Weather data unavailable");
+    }
+}
+
+loadWeather();
+setInterval(loadWeather, 600000);
+
+async function updateFireGauge() {
+    try {
+        let res = await fetch("https://api.weather.gov/points/43.30,-96.57");
+        let data = await res.json();
+        
+        let forecastURL = data.properties.forecastHourly;
+        let forecastRes = await fetch(forecastURL);
+        let forecastData = await forecastRes.json();
+        
+        let current = forecastData.properties.periods[0];
+        
+        let temp = current.temperature;
+        let wind = parseInt(current.windSpeed);
+        
+        let score = (temp * 0.4) + (wind * 3);
+        let percent = Math.min(score / 100, 1);
+        
+        let fill = document.getElementById("gaugeFill");
+        let label = document.getElementById("gaugeLabel");
+        
+        fill.style.transform = `rotate(${percent / 2}turn)`;
+        
+        if (score < 40) {
+            fill.style.background = "green";
+            label.textContent = "LOW";
+        } else if (score < 60) {
+            fill.style.background = "yellow";
+            label.textContent = "MODERATE";
+        } else if (score < 80) {
+            fill.style.background = "orange";
+            label.textContent = "HIGH";
+        } else {
+            fill.style.background = "red";
+            label.textContent = "EXTREME";
+        }
+    } catch (error) {
+        console.log("Fire gauge data unavailable");
+    }
+}
+
+updateFireGauge();
+setInterval(updateFireGauge, 600000);
+
+async function checkRegionalBurnBan() {
+    try {
+        let banner = document.getElementById("burnBanner");
+        
+        let lincoln = "https://api.weather.gov/alerts/active?zone=SDZ070";
+        let sioux = "https://api.weather.gov/alerts/active?zone=IAZ001";
+        
+        let responses = await Promise.all([
+            fetch(lincoln),
+            fetch(sioux)
+        ]);
+        
+        let data = await Promise.all(responses.map(r => r.json()));
+        
+        let burnActive = false;
+        
+        data.forEach(region => {
+            region.features.forEach(alert => {
+                let event = alert.properties.event;
+                if (event.includes("Red Flag")) {
+                    burnActive = true;
+                }
+            });
+        });
+        
+        if (burnActive) {
+            banner.textContent = "🔥 BURN BAN ACTIVE — EXTREME FIRE CONDITIONS";
+            banner.classList.add("burn-active");
+        } else {
+            banner.textContent = "✅ No Regional Burn Ban Active — Check Local Conditions Before Burning";
+            banner.classList.remove("burn-active");
+        }
+    } catch (error) {
+        console.log("Burn ban data unavailable");
+    }
+}
+
+checkRegionalBurnBan();
+setInterval(checkRegionalBurnBan, 300000);
+</script>
+
+</body>
+</html>

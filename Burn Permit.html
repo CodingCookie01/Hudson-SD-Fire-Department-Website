@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Burn Permit Application</title>
+
+	<style>
+		body{
+		font-family: Arial, sans-serif;
+		background:#f2f2f2;
+		margin:0;
+		}
+
+		.header{
+		background:#c40000;
+		color:white;
+		text-align:center;
+		padding:20px;
+		font-size:30px;
+		font-weight:bold;
+		}
+
+		.container{
+		width:60%;
+		margin:40px auto;
+		background:white;
+		padding:30px;
+		border-radius:10px;
+		box-shadow:0px 0px 10px rgba(0,0,0,0.2);
+		}
+
+		label{
+		display:block;
+		margin-top:15px;
+		font-weight:bold;
+		}
+
+		input, select, textarea{
+		width:100%;
+		padding:10px;
+		margin-top:5px;
+		border-radius:5px;
+		border:1px solid #ccc;
+		}
+
+		.button{
+		display:inline-block;
+		background:orange;
+		color:black;
+		padding:12px 20px;
+		text-decoration:none;
+		border:none;
+		border-radius:5px;
+		margin-top:20px;
+		font-weight:bold;
+		cursor:pointer;
+		}
+
+		.button:hover{
+		background:#ffcc00;
+		}
+
+		.footer{
+		background:#222;
+		color:white;
+		text-align:center;
+		padding:15px;
+		margin-top:40px;
+		}
+	</style>
+	</head>
+
+	<body>
+
+		<div class="header">
+		Burn Permit Application
+		</div>
+
+		<div class="container">
+	
+	<h2>Apply for a Controlled Burn Permit</h2>
+
+	<form>
+
+		<label>Full Name</label>
+		<input type="text" placeholder="Enter your name">
+
+		<label>Phone Number</label>
+		<input type="text" placeholder="Enter your phone number">
+
+		<label>Address of Burn Location</label>
+		<input type="text" placeholder="Enter burn address">
+
+		<label>Date of Burn</label>
+		<input type="date">
+
+		<label>Type of Burn</label>
+	<select>
+		<option>Agricultural</option>
+		<option>Brush</option>
+		<option>Debris</option>
+	</select>
+
+		<label>Description</label>
+		<textarea rows="4" placeholder="Describe what you plan to burn"></textarea>
+
+		<button class="button" type="button" onclick="submitForm()">Submit Application</button>
+
+	</form>
+
+		</div>
+
+		<div class="footer">
+		© 2026 Hudson Fire Department
+		</div>
+
+	<script>
+		function submitForm(){
+		alert("Your burn permit application has been submitted (demo only).");
+		}
+	</script>
+
+	</body>
+</html>

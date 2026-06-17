@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HVFD Application</title>
+<link rel="icon" href="HFDLogo.png">
+<style>
+* { box-sizing: border-box; }
+
+body { font-family: Arial; margin: 0; background: #f4f4f4; }
+
+header { background: #b30000; color: white; padding: 20px; text-align: center; }
+nav { background: #222; padding: 10px; text-align: center; }
+nav a { color: white; margin: 0 15px; text-decoration: none; font-weight: bold; }
+
+/* ── Three-column wrapper ── */
+.layout {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    min-height: calc(100vh - 130px); /* fill below header+nav */
+}
+
+/* Side images */
+.side-img {
+    flex: 1 1 0;
+    min-width: 0;
+    object-fit: cover;
+    display: block;
+}
+
+/* Centre form column */
+.form-col {
+    flex: 0 0 680px;     /* wider form */
+    padding: 32px 40px;
+    background: white;
+    box-shadow: 0 0 20px rgba(0,0,0,0.18);
+    overflow-y: auto;
+    max-height: calc(100vh - 130px);
+}
+
+/* PAGE logic */
+.page { display: none; }
+.page.active { display: block; }
+
+h2 { color: #b30000; margin-top: 0; }
+
+label { display: inline-flex; align-items: center; gap: 6px; margin: 4px 0; }
+
+input[type="text"],
+input:not([type]),
+input[type="date"],
+input[type="file"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+.buttons {
+    margin-top: 24px;
+    text-align: center;
+}
+
+button {
+    padding: 10px 24px;
+    margin: 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+button[type="button"] { background: #b30000; color: white; }
+button[type="submit"]  { background: #222;   color: white; }
+button:hover           { opacity: 0.87; }
+
+#certDetails {
+    max-height: 260px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    padding: 8px;
+    border-radius: 4px;
+    margin-top: 8px;
+}
+
+#certDetails h4 { margin: 8px 0 4px; color: #b30000; }
+
+/* ── Success confirmation ── */
+#successMsg {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 40px;
+    height: 100%;
+}
+
+.checkmark-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #b30000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28px;
+    animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+@keyframes pop {
+    0%   { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.checkmark-circle svg {
+    width: 54px;
+    height: 54px;
+    stroke: white;
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    stroke-dasharray: 80;
+    stroke-dashoffset: 80;
+    animation: draw 0.45s 0.35s ease forwards;
+}
+
+@keyframes draw {
+    to { stroke-dashoffset: 0; }
+}
+
+#successMsg h2 {
+    font-size: 26px;
+    color: #b30000;
+    margin: 0 0 10px;
+}
+
+#successMsg p {
+    color: #444;
+    font-size: 15px;
+    max-width: 340px;
+    line-height: 1.5;
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 900px) {
+    .side-img { display: none; }
+    .form-col  { flex: 1 1 auto; max-height: none; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>HVFD Application</h1>
+  <h4>Apply and be part of the team!</h4>
+</header>
+
+<nav>
+  <a href="HudsonFD.html">Home</a>
+  <a href="History.html">History</a>
+  <a href="Burn Report.html">Controlled Burns</a>
+  <a href="FundraisersPageDone.html">Fundraisers</a>
+  <a href="Staff.html">Staff</a>
+  <a href="Apply Now!.html">Apply Now</a>
+</nav>
+
+<!-- Three-column layout -->
+<div class="layout">
+
+  <!-- LEFT image -->
+  <img class="side-img" src="C:\CIS123\HudsonFD Website\StaffBg.jpg" alt="Firefighter in action">
+
+  <!-- CENTRE: form -->
+  <div class="form-col">
+
+    <!-- Success message (shown after submit) -->
+    <div id="successMsg">
+      <div class="checkmark-circle">
+        <svg viewBox="0 0 52 52">
+          <polyline points="14,27 22,36 38,18"/>
+        </svg>
+      </div>
+      <h2>Application Submitted!</h2>
+      <p>Thank you for applying to the Hudson Volunteer Fire Department. We'll be in touch soon.</p>
+    </div>
+
+    <form id="appForm">
+
+      <!-- PAGE 1 -->
+      <div class="page active">
+        <h2>Personal Info</h2>
+        <input name="lastName" placeholder="Last Name" required>
+        <input name="middleName" placeholder="Middle Name" required>
+        <input name="firstName" placeholder="First Name" required>
+        <input name="address" placeholder="Address" required>
+        <input name="phone" placeholder="Phone" required>
+
+        <div class="buttons">
+          <button type="button" onclick="nextPage()">Next</button>
+        </div>
+      </div>
+
+      <!-- PAGE 2 -->
+      <div class="page">
+        <h2>Background</h2>
+        <input name="age" placeholder="Age" required>
+        <input name="dateOfBirth" type="date" required>
+        <select name="felony" required>
+          <option value="">-- Select --</option>
+          <option value="No Felony">No Felony</option>
+          <option value="Felony">Felony</option>
+        </select>
+        <input name="education" placeholder="Education" required>
+        <select name="driversLicense" required>
+          <option value="">-- Select --</option>
+          <option value="Valid Drivers License">Valid Drivers License</option>
+          <option value="Nonvalid Drivers License">Nonvalid Drivers License</option>
+        </select>
+        <input name="licenseNumber" placeholder="Drivers License Number" required>
+        <input name="licenseClass" placeholder="Class of License" required>
+        <input name="licenseState" placeholder="Issuing State" required>
+
+        <div class="buttons">
+          <button type="button" onclick="prevPage()">Back</button>
+          <button type="button" onclick="nextPage()">Next</button>
+        </div>
+      </div>
+
+      <!-- PAGE 3 – Medical -->
+      <div class="page">
+        <h2>Medical Information</h2>
+        <p>Please list any medical conditions, injuries, or limitations that may affect your ability to perform duties safely.</p>
+
+        <label>
+          <input type="radio" name="medicalCondition" value="No" onclick="toggleMedical(false)" required>
+          No known conditions
+        </label>
+
+        <br>
+
+        <label>
+          <input type="radio" name="medicalCondition" value="Yes" onclick="toggleMedical(true)" required>
+          Yes (please explain below)
+        </label>
+
+        <div id="medicalDetails" style="display:none; margin-top:8px;">
+          <textarea name="medicalDescription" id="medicalText" rows="4" placeholder="Describe any conditions, limitations, medications, or concerns..."></textarea>
+        </div>
+
+        <div class="buttons">
+          <button type="button" onclick="prevPage()">Back</button>
+          <button type="button" onclick="nextPage()">Next</button>
+        </div>
+      </div>
+
+      <!-- PAGE 4 – Certifications -->
+      <div class="page">
+        <h2>Certifications</h2>
+
+        <div id="certOptions">
+          <label><input type="checkbox" value="EMT-Basic" onchange="handleCert(this)"> EMT-Basic</label><br>
+          <label><input type="checkbox" value="EMT-Advanced" onchange="handleCert(this)"> EMT-Advanced</label><br>
+          <label><input type="checkbox" value="Firefighter I" onchange="handleCert(this)"> Firefighter I</label><br>
+          <label><input type="checkbox" value="Firefighter II" onchange="handleCert(this)"> Firefighter II</label><br>
+          <label><input type="checkbox" value="Wildland" onchange="handleCert(this)"> Wildland</label><br>
+          <label><input type="checkbox" value="AED" onchange="handleCert(this)"> AED</label><br>
+          <label><input type="checkbox" value="CPR" onchange="handleCert(this)"> CPR</label><br>
+          <label><input type="checkbox" value="Hazmat Awareness" onchange="handleCert(this)"> Hazmat Awareness</label><br>
+          <label><input type="checkbox" value="Hazmat Operations" onchange="handleCert(this)"> Hazmat Operations</label><br>
+          <label><input type="checkbox" value="Rescue Tech" onchange="handleCert(this)"> Rescue Technician</label><br>
+          <label><input type="checkbox" value="Other" onchange="handleCert(this)"> Other</label>
+        </div>
+
+        <div id="certDetails"></div>
+
+        <div class="buttons">
+          <button type="button" onclick="prevPage()">Back</button>
+          <button type="button" onclick="submitForm()">Submit</button>
+        </div>
+      </div>
+
+    </form>
+  </div><!-- /form-col -->
+
+  <!-- RIGHT image -->
+  <img class="side-img" src="C:\CIS123\HudsonFD Website\Form.left.jpg" alt="Fire truck at emergency scene">
+
+</div><!-- /layout -->
+
+<script>
+let currentPage = 0;
+const pages = document.querySelectorAll(".page");
+
+function showPage(index) {
+    pages.forEach(p => p.classList.remove("active"));
+    pages[index].classList.add("active");
+}
+
+function prevPage() {
+    if (currentPage > 0) {
+        currentPage--;
+        showPage(currentPage);
+    }
+}
+
+function nextPage() {
+    const current = document.querySelector(".page.active");
+    const inputs  = current.querySelectorAll("input, textarea, select");
+
+    // Medical page: require a radio to be selected
+    const medYes = current.querySelector('input[name="medicalCondition"][value="Yes"]');
+    const medNo  = current.querySelector('input[name="medicalCondition"][value="No"]');
+    if (medYes !== null || medNo !== null) {
+        if (!medYes.checked && !medNo.checked) {
+            alert("Please indicate whether you have a medical condition.");
+            return;
+        }
+        if (medYes.checked) {
+            const txt = document.getElementById("medicalText");
+            if (!txt || txt.value.trim() === "") {
+                alert("Please describe your medical condition.");
+                txt && txt.focus();
+                return;
+            }
+        }
+    }
+
+    // Validate all other visible inputs
+    for (let input of inputs) {
+        if (input.type === "button" || input.type === "submit") continue;
+        if (input.type === "radio")    continue;
+        if (input.type === "checkbox") continue;
+        if (input.offsetParent === null) continue;   // hidden
+
+        if (input.value.trim() === "") {
+            alert("Please fill out all fields before continuing.");
+            input.focus();
+            return;
+        }
+    }
+
+    if (currentPage < pages.length - 1) {
+        currentPage++;
+        showPage(currentPage);
+    }
+}
+
+function toggleMedical(show) {
+    const box = document.getElementById("medicalDetails");
+    box.style.display = show ? "block" : "none";
+    if (!show) {
+        const txt = document.getElementById("medicalText");
+        if (txt) txt.value = "";
+    }
+}
+
+function handleCert(checkbox) {
+    const container = document.getElementById("certDetails");
+    const id = checkbox.value.replace(/\s/g, "_");
+
+    if (checkbox.checked) {
+        const div = document.createElement("div");
+        div.id = "cert_" + id;
+        div.innerHTML = `
+            <h4>${checkbox.value}</h4>
+            ${checkbox.value === "Other" ? `<input name="cert_${id}_specify" placeholder="Specify certification">` : ""}
+            <input name="cert_${id}_issuer" placeholder="Issuer">
+            <input name="cert_${id}_date" type="date">
+            <input name="cert_${id}_file" type="file">
+        `;
+        container.appendChild(div);
+    } else {
+        const el = document.getElementById("cert_" + id);
+        if (el) el.remove();
+    }
+}
+
+function submitForm() {
+    // Collect all form data
+    const form = document.getElementById("appForm");
+    const formData = new FormData(form);
+    
+    // Convert FormData to object for email
+    const data = Object.fromEntries(formData);
+    
+    // Send to Formspree
+    fetch("https://formspree.io/f/xbdeylew", {
+        method: "POST",
+        body: formData,
+        headers: {
+            "Accept": "application/json"
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            // Show success message on the same page
+            document.getElementById("appForm").style.display = "none";
+            const msg = document.getElementById("successMsg");
+            msg.style.display = "flex";
+        } else {
+            alert("There was an error submitting the form. Please try again.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("There was an error submitting the form. Please try again.");
+    });
+}
+</script>
+
+</body>
+</html>

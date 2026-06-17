@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fire Department Staff – Hudson Fire Department</title>
+	<link rel="icon" href="HFDLogo.png">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f0f0f0;
+            color: #1a1a1a;
+        }
+
+        /* ── Header ── */
+        header {
+            background-color: #b30000;
+            color: white;
+            padding: 28px 20px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        }
+        header h1 {
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            letter-spacing: 0.08em;
+        }
+        header p {
+            margin-top: 6px;
+            font-size: 0.95rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #ffaaaa;
+        }
+
+        /* ── Nav ── */
+        nav {
+            background-color: #222;
+            padding: 12px 16px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+        nav a:hover { color: #ff8888; }
+
+        /* ── Section Banner Bar ── */
+        .section-banner {
+            position: relative;
+            width: 100%;
+            height: 130px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .section-banner img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+        .section-banner .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.60);
+        }
+        .section-banner .accent-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 6px;
+            height: 100%;
+            background: #b30000;
+        }
+        .section-banner h2 {
+            position: relative;
+            z-index: 2;
+            color: white;
+            font-size: clamp(1.4rem, 3vw, 2.2rem);
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.7);
+        }
+
+        /* ── Roster Grid ── */
+        .roster-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 36px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+        }
+
+        /* ── Member Card ── */
+        .member-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.09);
+            transition: box-shadow 0.25s, transform 0.25s;
+        }
+        .member-card:hover {
+            box-shadow: 0 8px 28px rgba(0,0,0,0.16);
+            transform: translateY(-3px);
+        }
+        .member-card .avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(179, 0, 0, 0.25);
+            margin-bottom: 12px;
+            background: #e0e0e0;
+        }
+        .member-card .avatar-placeholder {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            border: 3px solid rgba(179, 0, 0, 0.20);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .member-card .avatar-placeholder svg {
+            width: 52px;
+            height: 52px;
+            fill: #aaa;
+        }
+        .member-card .rank {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #b30000;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        }
+        .member-card .name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        /* ── Footer ── */
+        footer {
+            background-color: #222;
+            color: #aaa;
+            text-align: center;
+            padding: 20px;
+            margin-top: 24px;
+            font-size: 0.85rem;
+        }
+
+        /* ── Fade-in animation ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up {
+            opacity: 0;
+            animation: fadeUp 0.55s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+    <h1>Hudson Fire Department</h1>
+    <p>Meet Our Team</p>
+</header>
+
+<!-- Nav -->
+<nav>
+    <a href="HudsonFD.html">Home</a>
+    <a href="History.html">History</a>
+    <a href="Burn Report.html">Controlled Burns</a>
+    <a href="FundraisersPageDone.html">Fundraisers</a>
+    <a href="Staff.html">Staff</a>
+    <a href="Apply Now!.html">Apply Now</a>
+</nav>
+
+<!-- ═══════════════════ COMMAND STAFF ═══════════════════ -->
+<div class="section-banner">
+    <img src="C:\CIS123\HudsonFD Website\Comand.jpg" alt="Command Staff">
+    <div class="overlay"></div>
+    <div class="accent-bar"></div>
+    <h2>Command Staff</h2>
+</div>
+
+<div class="roster-grid">
+
+    <div class="member-card fade-up" style="animation-delay:0.05s">
+		<img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/JustinT.jpg" alt="Justin Teunissen" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <p class="rank">Fire Chief</p>
+        <p class="name">Justin Teunissen</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.10s">
+	   <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/MikeS.jpg" alt="Mike Schlup" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <p class="rank">1st Assistant Chief</p>
+        <p class="name">Mike Schlup</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.15s">
+	    <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/GeneJ.jpg" alt="Gene Just" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <p class="rank">2nd Assistant Chief</p>
+        <p class="name">Gene Just</p>
+    </div>
+
+</div>
+
+<!-- ═══════════════════ OPERATIONS ═══════════════════ -->
+<div class="section-banner">
+    <img src="C:\CIS123\HudsonFD Website\Operations.jpg" alt="Operations">
+    <div class="overlay"></div>
+    <div class="accent-bar"></div>
+    <h2>Operations</h2>
+</div>
+
+<div class="roster-grid">
+
+    <div class="member-card fade-up" style="animation-delay:0.05s">
+		<img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/MikeS.jpg" alt="Mike Schlup" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <p class="rank">Secretary</p>
+        <p class="name">Mike Loundsbery</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.10s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/MikeS.jpg" alt="Mike Schlup" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <p class="rank">Treasurer</p>
+        <p class="name">Mike Schlup</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.15s">
+       <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/MikeS.jpg" alt="Mike Schlup" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <p class="rank">Safety Officer</p>
+        <p class="name">Mike Schlup</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.20s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/JimW.jpg" alt="Jim Wennblom" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <p class="rank">Truck Captain</p>
+        <p class="name">Jim Wennblom</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.25s">
+		<img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/JoshL.jpg" alt="Josh Lewis" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <p class="rank">Truck Captain</p>
+        <p class="name">Josh Lewis</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.30s">
+		<img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/JoshL.jpg" alt="Josh Lewis" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <p class="rank">Training Officer</p>
+        <p class="name">Josh Lewis</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.35s">
+		<img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/BrendenL.jpg" alt="Brenden Lounsbery" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <p class="rank">Training Officer</p>
+        <p class="name">Brenden Lounsbery</p>
+    </div>
+
+</div>
+
+<!-- ═══════════════════ MEMBERS ═══════════════════ -->
+<div class="section-banner">
+    <img src="C:\CIS123\HudsonFD Website\Members.jpg" alt="Members">
+    <div class="overlay"></div>
+    <div class="accent-bar"></div>
+    <h2>Members</h2>
+</div>
+
+<div class="roster-grid">
+
+    <div class="member-card fade-up" style="animation-delay:0.05s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/MikeB.jpg" alt="Mike Beaverson" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Mike Beaverson</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.08s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/NickB.jpg" alt="Nick Brandt" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Nick Brandt</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.11s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/AidenCole.jpg" alt="Aiden Cole" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Aiden Cole</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.14s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/JeffCole.jpg" alt="Jeff Cole" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Jeff Cole</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.17s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/MatFrazier.jpg" alt="Mat Frazier" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Mat Frazier</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.20s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/RussHazel.jpg" alt="Russ Hazel" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Russ Hazel</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.23s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/GeneJ.jpg" alt="Gene Just" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Gene Just</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.26s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/JoshL.jpg" alt="Josh Lewis" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Josh Lewis</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.29s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/BrendenL.jpg" alt="Brenden Lounsbery" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Brenden Lounsbery</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.32s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/MikeL.jpg" alt="Mike Lounsbery" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Mike Lounsbery</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.35s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/HFD.png" alt="Dan Nitz" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Dan Nitz</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.38s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/DarwinR.jpg" alt="Darwin Ryken" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Darwin Ryken</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.41s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/MikeS.jpg" alt="Mike Schlup" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Mike Schlup</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.44s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/PhilS.jpg" alt="Phil Serck" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Phil Serck</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.47s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/AndyS.jpg" alt="Andy Stoffel" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Andy Stoffel</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.50s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/JustinT.jpg" alt="Justin Teunissen" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Justin Teunissen</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.53s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/KateT.jpg" alt="Kate Teunissen" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Kate Teunissen</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.56s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/DougV.jpg" alt="Doug Van't Hof" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Doug Van't Hof</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.59s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/JimW.jpg" alt="Jim Wennblom" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Firefighter</p>
+        <p class="name">Jim Wennblom</p>
+    </div>
+
+</div>
+
+<!-- ═══════════════════ JUNIOR FIREFIGHTERS ═══════════════════ -->
+<div class="section-banner">
+    <img src="C:\CIS123\HudsonFD Website\Juniors.jpg" alt="Junior Firefighters">
+    <div class="overlay"></div>
+    <div class="accent-bar"></div>
+    <h2>Junior Firefighters</h2>
+</div>
+
+<div class="roster-grid">
+
+    <div class="member-card fade-up" style="animation-delay:0.05s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/Jacob.jpg" alt="Jacob Cole" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Junior Firefighter</p>
+        <p class="name">Jacob Cole</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.10s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/Hayden.jpg" alt="Hayden Lounsbery" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Junior Firefighter</p>
+        <p class="name">Hayden Lounsbery</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.15s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/Alyssa.jpg" alt="Alyssa Just" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Junior Firefighter</p>
+        <p class="name">Alyssa Just</p>
+    </div>
+
+    <div class="member-card fade-up" style="animation-delay:0.20s">
+        <img class="avatar" src="Personnel Photos-20260320T175025Z-1-001/JoshF.jpg" alt="Josh Frazier" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder" style="display:none"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+        <p class="rank">Junior Firefighter</p>
+        <p class="name">Josh Frazier</p>
+    </div>
+
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>© 2026 Hudson Fire Department</p>
+</footer>
+
+</body>
+</html>

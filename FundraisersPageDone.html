@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events & Fundraisers - Hudson Fire Department</title>
+    <link rel="icon" href="HFDLogo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(135deg, #b30000, #8B0000);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: #222;
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            color: #b30000;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* View Toggle */
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .view-btn {
+            padding: 10px 20px;
+            border: 2px solid #b30000;
+            background: white;
+            color: #b30000;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .view-btn.active {
+            background: #b30000;
+            color: white;
+        }
+
+        .view-btn:hover {
+            background: #b30000;
+            color: white;
+        }
+
+        /* Donation Banner */
+        .donation-banner {
+            background: linear-gradient(135deg, #b30000, #8B0000);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .donation-banner h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .donation-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .donation-btn {
+            padding: 12px 30px;
+            background: white;
+            color: #b30000;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .donation-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        /* Calendar View */
+        .calendar-container {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .calendar-header {
+            background: #b30000;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .calendar-header button {
+            background: white;
+            color: #b30000;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .calendar-header button:hover {
+            background: #f0f0f0;
+        }
+
+        .calendar {
+            padding: 20px;
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .weekday {
+            text-align: center;
+            font-weight: bold;
+            color: #b30000;
+            padding: 10px 0;
+        }
+
+        .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .day {
+            aspect-ratio: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .day:hover {
+            background: #f9f9f9;
+            border-color: #b30000;
+        }
+
+        .day.other-month {
+            color: #999;
+            background: #f9f9f9;
+        }
+
+        .day.has-event {
+            background: #fff3cd;
+            border-color: #b30000;
+        }
+
+        .day.has-event::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            width: 6px;
+            height: 6px;
+            background: #b30000;
+            border-radius: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .day-number {
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .day-event-indicator {
+            font-size: 0.65em;
+            color: #b30000;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* List View */
+        .event-list {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .event-item {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            transition: background 0.3s;
+        }
+
+        .event-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-item:hover {
+            background: #f9f9f9;
+        }
+
+        .event-date {
+            background: #b30000;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            min-width: 100px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .event-date-month {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .event-date-day {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .event-details {
+            flex: 1;
+        }
+
+        .event-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .event-location {
+            color: #666;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .event-location i {
+            color: #b30000;
+        }
+
+        .event-time {
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .event-time i {
+            color: #b30000;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .event-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+
+        .add-to-calendar {
+            background: #b30000;
+            color: white;
+        }
+
+        .add-to-calendar:hover {
+            background: #8B0000;
+        }
+
+        .event-info {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .event-info:hover {
+            background: #e0e0e0;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .filter-section h3 {
+            color: #b30000;
+            margin-bottom: 15px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #b30000;
+            background: white;
+            color: #b30000;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .filter-btn.active {
+            background: #b30000;
+            color: white;
+        }
+
+        .filter-btn:hover {
+            background: #b30000;
+            color: white;
+        }
+
+        /* How to Help Section */
+        .how-to-help {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .how-to-help h2 {
+            color: #b30000;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .how-to-help p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        /* Footer */
+        footer {
+            background: #222;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 30px;
+            border: 1px solid #888;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #b30000;
+        }
+
+        .modal h2 {
+            color: #b30000;
+            margin-bottom: 15px;
+        }
+
+        .modal p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            nav a {
+                margin: 0 8px;
+                font-size: 0.9em;
+            }
+
+            .event-item {
+                flex-direction: column;
+            }
+
+            .view-toggle {
+                flex-direction: column;
+            }
+
+            .donation-buttons {
+                flex-direction: column;
+            }
+
+            .donation-btn {
+                width: 100%;
+            }
+
+            .day {
+                min-height: 60px;
+                font-size: 0.8em;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Events & Fundraisers</h1>
+    <p>Hudson Fire Department Community Events</p>
+</header>
+
+<nav>
+    <a href="HudsonFD.html">Home</a>
+    <a href="History.html">History</a>
+    <a href="Burn Report.html">Controlled Burns</a>
+    <a href="FundraisersPageDone.html">Events</a>
+    <a href="Staff.html">Staff</a>
+    <a href="Apply Now!.html">Apply Now</a>
+</nav>
+
+<div class="container">
+    <!-- Donation Banner -->
+    <div class="donation-banner">
+        <h2>Support Our Community</h2>
+        <p>Donate to the Hudson Fire Department to support emergency services, training, and community safety programs.</p>
+        <div class="donation-buttons">
+            <a href="https://venmo.com/?txn=pay&recipients=@HudsonFire-Department" class="donation-btn">
+                <i class="fas fa-mobile-alt"></i> Donate via Venmo
+            </a>
+            <button class="donation-btn" onclick="showDonationModal()">
+                <i class="fas fa-dollar-sign"></i> Other Donation Methods
+            </button>
+        </div>
+    </div>
+
+    <!-- View Toggle -->
+    <div class="view-toggle">
+        <button class="view-btn active" onclick="showCalendarView()">
+            <i class="fas fa-calendar"></i> Calendar View
+        </button>
+        <button class="view-btn" onclick="showListView()">
+            <i class="fas fa-list"></i> List View
+        </button>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <h3>Filter Events</h3>
+        <div class="filter-buttons">
+            <button class="filter-btn active" onclick="filterEvents('all')">All Events</button>
+            <button class="filter-btn" onclick="filterEvents('fundraiser')">Fundraisers</button>
+            <button class="filter-btn" onclick="filterEvents('community')">Community Events</button>
+            <button class="filter-btn" onclick="filterEvents('training')">Training</button>
+        </div>
+    </div>
+
+    <!-- Calendar View -->
+    <div id="calendarView" class="calendar-container">
+        <div class="calendar-header">
+            <button onclick="previousMonth()">← Previous</button>
+            <h2 id="monthYear"></h2>
+            <button onclick="nextMonth()">Next →</button>
+        </div>
+        <div class="calendar">
+            <div class="weekdays">
+                <div class="weekday">Sun</div>
+                <div class="weekday">Mon</div>
+                <div class="weekday">Tue</div>
+                <div class="weekday">Wed</div>
+                <div class="weekday">Thu</div>
+                <div class="weekday">Fri</div>
+                <div class="weekday">Sat</div>
+            </div>
+            <div class="days" id="calendarDays"></div>
+        </div>
+    </div>
+
+    <!-- List View -->
+    <div id="listView" class="event-list hidden"></div>
+
+    <!-- How to Help Section -->
+    <div class="how-to-help">
+        <h2>How Your Donation Helps</h2>
+        <p>
+            Donating to the Hudson Fire Department helps support our mission to protect and serve the community by saving lives and preventing property damage through fire prevention and emergency medical services. Your contribution ensures that those in need are treated with compassion and integrity, with their care and protection as the highest priority.
+        </p>
+        <p>
+            These funds help provide essential equipment, training, and resources that allow first responders to act quickly and effectively in emergencies. By donating, you are directly investing in the safety and well-being of your community, because <strong>our community is our protection</strong>.
+        </p>
+        <p>
+            <strong>Donations can be made in person at the station or during community events.</strong>
+        </p>
+    </div>
+
+</div>
+
+<!-- Donation Modal -->
+<div id="donationModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeDonationModal()">&times;</span>
+        <h2>Donation Methods</h2>
+        <p><strong>Electronic Donations:</strong></p>
+        <p>Venmo: @HudsonFire-Department</p>
+        <p><strong>In-Person Donations:</strong></p>
+        <p>Visit the Hudson Fire Department station or attend one of our community events to donate directly.</p>
+        <p><strong>Why Donate?</strong></p>
+        <p>Your support helps us provide emergency services, training programs, and community safety initiatives that protect our residents.</p>
+    </div>
+</div>
+
+<!-- Event Details Modal -->
+<div id="eventModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeEventModal()">&times;</span>
+        <h2 id="modalEventTitle"></h2>
+        <p><strong>Date & Time:</strong> <span id="modalEventDateTime"></span></p>
+        <p><strong>Location:</strong> <span id="modalEventLocation"></span></p>
+        <p><strong>Description:</strong> <span id="modalEventDescription"></span></p>
+        <div class="event-actions">
+            <button class="event-btn add-to-calendar" onclick="addEventToDeviceCalendar()">
+                <i class="fas fa-calendar-plus"></i> Add to Calendar
+            </button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>© 2026 Hudson Fire Department</p>
+</footer>
+
+<script>
+    // Events Data
+    const events = [
+        {
+            id: 1,
+            title: 'Annual Pancake Breakfast',
+            date: new Date(2026, 3, 20),
+            time: '7:00 AM - 12:00 PM',
+            location: 'Hudson Fire Department',
+            description: 'Join us for a delicious pancake breakfast! All proceeds support the fire department.',
+            category: 'fundraiser'
+        },
+        {
+            id: 2,
+            title: 'Weekly Beef Drawing - Every Tuesday',
+            date: new Date(2026, 5, 7),
+            endDate: new Date(2026, 6, 31),
+            time: '6:00 PM - 8:00 PM',
+            location: 'Hudson Fire Department',
+            description: 'Weekly beef drawing event. Tickets available at the station.',
+            category: 'fundraiser',
+            recurring: 'weekly'
+        },
+        {
+            id: 3,
+            title: 'South Dakota State Fire School - Send Off',
+            date: new Date(2026, 5, 8),
+            time: 'All Day',
+            location: 'Hudson Fire Department',
+            description: 'Send off ceremony for firefighters attending the South Dakota State Fire School.',
+            category: 'training'
+        },
+        {
+            id: 4,
+            title: 'Water Fights',
+            date: new Date(2026, 5, 12),
+            time: '5:00 PM',
+            location: '400th Block of Wheelock Street',
+            description: 'Family-friendly water fight event. Bring your water balloons and buckets!',
+            category: 'community'
+        },
+        {
+            id: 5,
+            title: 'South Dakota State Fire School - Return and Evolutions',
+            date: new Date(2026, 5, 13),
+            time: 'All Day',
+            location: 'Hudson Fire Department',
+            description: 'Welcome back ceremony and fire school evolutions demonstration.',
+            category: 'training'
+        },
+        {
+            id: 6,
+            title: 'Fill the Boot Donation Drive',
+            date: new Date(2026, 5, 15),
+            time: 'Throughout the month',
+            location: 'Hudson Fire Department',
+            description: 'Community donation drive supporting the Muscular Dystrophy Association.',
+            category: 'fundraiser'
+        },
+        {
+            id: 7,
+            title: 'Waddy\'s Street Dance',
+            date: new Date(2026, 7, 22),
+            time: '9:00 PM - 12:00 AM',
+            location: 'Wheelock Street',
+            description: 'Community street dance with live music and entertainment.',
+            category: 'community'
+        },
+        {
+            id: 8,
+            title: 'Hudson Community Alumni Reunion',
+            date: new Date(2026, 8, 5),
+            time: 'All Day',
+            location: 'Hudson Community Center',
+            description: 'Annual reunion celebrating Hudson community members and alumni.',
+            category: 'community'
+        },
+        {
+            id: 9,
+            title: 'Hudson\'s Annual Holiday Pancake Feed',
+            date: new Date(2026, 11, 6),
+            time: '7:00 AM - 1:00 PM',
+            location: 'Hudson Fire Department',
+            description: 'Holiday season pancake breakfast. A seasonal tradition!',
+            category: 'fundraiser'
+        },
+        {
+            id: 10,
+            title: 'Hudson\'s Annual Holiday Toy Drive',
+            date: new Date(2026, 11, 15),
+            time: 'Throughout December',
+            location: 'Hudson Fire Department',
+            description: 'Help us collect toys for children in need this holiday season.',
+            category: 'fundraiser'
+        }
+    ];
+
+    let currentMonth = new Date();
+    let filteredCategory = 'all';
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        renderCalendar();
+        renderEventList();
+    });
+
+    function renderCalendar() {
+        const year = currentMonth.getFullYear();
+        const month = currentMonth.getMonth();
+        
+        document.getElementById('monthYear').textContent = 
+            currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const prevLastDay = new Date(year, month, 0);
+        
+        const firstDayIndex = firstDay.getDay();
+        const lastDayDate = lastDay.getDate();
+        const prevLastDayDate = prevLastDay.getDate();
+        
+        let html = '';
+        
+        // Previous month days
+        for (let i = firstDayIndex - 1; i >= 0; i--) {
+            html += `<div class="day other-month">${prevLastDayDate - i}</div>`;
+        }
+        
+        // Current month days
+        for (let day = 1; day <= lastDayDate; day++) {
+            const date = new Date(year, month, day);
+            const dayEvents = getEventsForDate(date);
+            const hasEvent = dayEvents.length > 0;
+            
+            let eventIndicator = '';
+            if (hasEvent) {
+                eventIndicator = `<div class="day-event-indicator">${dayEvents[0].title.substring(0, 10)}</div>`;
+            }
+            
+            const eventClass = hasEvent ? 'has-event' : '';
+            html += `<div class="day ${eventClass}" onclick="showDayEvents('${date.toDateString()}')">
+                        <span class="day-number">${day}</span>
+                        ${eventIndicator}
+                    </div>`;
+        }
+        
+        // Next month days
+        for (let day = 1; day <= (7 - lastDay.getDay() - 1); day++) {
+            html += `<div class="day other-month">${day}</div>`;
+        }
+        
+        document.getElementById('calendarDays').innerHTML = html;
+    }
+
+    function getEventsForDate(date) {
+        return events.filter(event => {
+            const eventDate = new Date(event.date);
+            return eventDate.getFullYear() === date.getFullYear() &&
+                   eventDate.getMonth() === date.getMonth() &&
+                   eventDate.getDate() === date.getDate() &&
+                   (filteredCategory === 'all' || event.category === filteredCategory);
+        });
+    }
+
+    function showDayEvents(dateString) {
+        const date = new Date(dateString);
+        const dayEvents = getEventsForDate(date);
+        
+        if (dayEvents.length > 0) {
+            const event = dayEvents[0];
+            showEventDetails(event);
+        }
+    }
+
+    function renderEventList() {
+        let filteredEvents = events;
+        if (filteredCategory !== 'all') {
+            filteredEvents = events.filter(e => e.category === filteredCategory);
+        }
+        
+        filteredEvents.sort((a, b) => a.date - b.date);
+        
+        let html = '';
+        filteredEvents.forEach(event => {
+            const eventDate = new Date(event.date);
+            const month = eventDate.toLocaleDateString('en-US', { month: 'short' });
+            const day = eventDate.getDate();
+            
+            html += `
+                <div class="event-item" onclick="showEventDetails(${event.id})">
+                    <div class="event-date">
+                        <div class="event-date-month">${month}</div>
+                        <div class="event-date-day">${day}</div>
+                    </div>
+                    <div class="event-details">
+                        <div class="event-title">${event.title}</div>
+                        <div class="event-location">
+                            <i class="fas fa-map-marker-alt"></i> ${event.location}
+                        </div>
+                        <div class="event-time">
+                            <i class="fas fa-clock"></i> ${event.time}
+                        </div>
+                        <div class="event-actions">
+                            <button class="event-btn add-to-calendar" onclick="event.stopPropagation(); addEventToCalendar(${event.id})">
+                                <i class="fas fa-calendar-plus"></i> Add to Calendar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        document.getElementById('listView').innerHTML = html;
+    }
+
+    function showEventDetails(eventId) {
+        const event = events.find(e => e.id === eventId);
+        if (!event) return;
+        
+        document.getElementById('modalEventTitle').textContent = event.title;
+        document.getElementById('modalEventDateTime').textContent = 
+            event.date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + 
+            ' at ' + event.time;
+        document.getElementById('modalEventLocation').textContent = event.location;
+        document.getElementById('modalEventDescription').textContent = event.description;
+        
+        document.getElementById('eventModal').style.display = 'block';
+        window.currentEventId = eventId;
+    }
+
+    function closeEventModal() {
+        document.getElementById('eventModal').style.display = 'none';
+    }
+
+    function showDonationModal() {
+        document.getElementById('donationModal').style.display = 'block';
+    }
+
+    function closeDonationModal() {
+        document.getElementById('donationModal').style.display = 'none';
+    }
+
+    function addEventToCalendar(eventId) {
+        const event = events.find(e => e.id === eventId);
+        if (!event) return;
+        
+        addEventToDeviceCalendar(event);
+    }
+
+    function addEventToDeviceCalendar(event = null) {
+        if (!event) {
+            event = events.find(e => e.id === window.currentEventId);
+        }
+        
+        if (!event) return;
+        
+        const startDate = event.date;
+        const endDate = event.endDate || event.date;
+        
+        // Create iCal format
+        const icalContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Hudson Fire Department//Events//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:${event.id}-${startDate.getTime()}@hudsonfiredepartment.com
+DTSTAMP:${formatICalDate(new Date())}
+DTSTART:${formatICalDate(startDate)}
+DTEND:${formatICalDate(endDate)}
+SUMMARY:${event.title}
+DESCRIPTION:${event.description}
+LOCATION:${event.location}
+END:VEVENT
+END:VCALENDAR`;
+        
+        // Create download
+        const blob = new Blob([icalContent], { type: 'text/calendar;charset=utf-8' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `${event.title.replace(/\s+/g, '_')}.ics`);
+        link.style.visibility = 'hidden';
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        alert('Event added! Check your downloads folder and import the .ics file to your calendar app.');
+    }
+
+    function formatICalDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        
+        return `${year}${month}${day}T${hours}${minutes}${seconds}`;
+    }
+
+    function previousMonth() {
+        currentMonth.setMonth(currentMonth.getMonth() - 1);
+        renderCalendar();
+    }
+
+    function nextMonth() {
+        currentMonth.setMonth(currentMonth.getMonth() + 1);
+        renderCalendar();
+    }
+
+    function showCalendarView() {
+        document.getElementById('calendarView').classList.remove('hidden');
+        document.getElementById('listView').classList.add('hidden');
+        document.querySelectorAll('.view-btn')[0].classList.add('active');
+        document.querySelectorAll('.view-btn')[1].classList.remove('active');
+    }
+
+    function showListView() {
+        document.getElementById('calendarView').classList.add('hidden');
+        document.getElementById('listView').classList.remove('hidden');
+        document.querySelectorAll('.view-btn')[0].classList.remove('active');
+        document.querySelectorAll('.view-btn')[1].classList.add('active');
+    }
+
+    function filterEvents(category) {
+        filteredCategory = category;
+        
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        renderCalendar();
+        renderEventList();
+    }
+
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+        const donationModal = document.getElementById('donationModal');
+        const eventModal = document.getElementById('eventModal');
+        
+        if (event.target === donationModal) {
+            donationModal.style.display = 'none';
+        }
+        if (event.target === eventModal) {
+            eventModal.style.display = 'none';
+        }
+    }
+</script>
+
+</body>
+</html>
