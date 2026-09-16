@@ -87,6 +87,15 @@
       document.getElementById(id).innerHTML = people.length ? people.map(renderCard).join("") : '<p class="empty">No active staff members listed.</p>';
     }
 
+    function normalizedArea(person) {
+      return (person.area || "").toLowerCase().trim().replace(/\s+/g, " ");
+    }
+
+    function isArea(person, names) {
+      const area = normalizedArea(person);
+      return names.includes(area);
+    }
+
     async function loadStaff() {
       const response = await fetch(STAFF_SHEET_URL + "&cache=" + Date.now());
       if (!response.ok) throw new Error("HTTP " + response.status);
@@ -95,11 +104,10 @@
       if (!rows.length) throw new Error("No rows were found in the published sheet.");
 
       const activePeople = rows.filter((person) => ["active", "true", "yes"].includes((person.active || "").toLowerCase()));
-      const area = (person) => (person.area || "").toLowerCase().trim();
-      renderArea("command-staff", activePeople.filter((person) => area(person) === "command staff"));
-      renderArea("operations", activePeople.filter((person) => area(person) === "operations"));
-      renderArea("members", activePeople.filter((person) => area(person) === "members"));
-      renderArea("juniors", activePeople.filter((person) => ["juniors", "junior firefighters"].includes(area(person))));
+      renderArea("command-staff", activePeople.filter((person) => isArea(person, ["command staff", "command"] )));
+      renderArea("operations", activePeople.filter((person) => isArea(person, ["operations", "operation"] )));
+      renderArea("members", activePeople.filter((person) => isArea(person, ["members", "member", "firefighters", "firefighter"] )));
+      renderArea("juniors", activePeople.filter((person) => isArea(person, ["juniors", "junior", "junior firefighters", "junior firefighter"] )));
       document.getElementById("status").textContent = `${activePeople.length} active staff row(s) loaded. Headers detected: ${Object.keys(rows[0]).join(", ")}`;
     }
 
