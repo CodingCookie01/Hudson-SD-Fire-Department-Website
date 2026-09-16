@@ -53,27 +53,30 @@
 </div>
 
 <div class="section-banner"><img src="Members.jpg" alt="Members"><h2>Members</h2></div>
-<div class="roster-grid">
-  <script>
-    const members = [
-      ['Mike Beaverson','MikeB.jpg'],['Nick Brandt','NickB.jpg'],['Aiden Cole','AidenCole.jpg'],['Jeff Cole','JeffCole.jpg'],
-      ['Mat Frazier','MatFrazier.jpg'],['Russ Hazel','RussHazel.jpg'],['Gene Just','GeneJ.jpg'],['Josh Lewis','JoshL.jpg'],
-      ['Brenden Lounsbery','BrendenL.jpg'],['Mike Lounsbery','MikeL.jpg'],['Dan Nitz','HFD.png'],['Darwin Ryken','DarwinR.jpg'],
-      ['Mike Schlup','MikeS.jpg'],['Phil Serck','PhilS.jpg'],['Andy Stoffel','AndyS.jpg'],['Justin Teunissen','JustinT.jpg'],
-      ['Kate Teunissen','KateT.jpg'],["Doug Van't Hof",'DougV.jpg'],['Jim Wennblom','JimW.jpg']
-    ];
-    const photoFolder = 'Personnel Photos-20260320T175025Z-1-001/';
-    document.write(members.map(([name, photo]) => `<article class="member-card"><img class="avatar" src="${photoFolder}${photo}" alt="${name}" onerror="this.onerror=null;this.src='Members.jpg'"><p class="rank">Firefighter</p><p class="name">${name}</p></article>`).join(''));
-  </script>
-</div>
+<div class="roster-grid" id="members-roster"></div>
 
 <div class="section-banner"><img src="Juniors.jpg" alt="Junior Firefighters"><h2>Junior Firefighters</h2></div>
-<div class="roster-grid">
-  <script>
-    const juniors = ['Jacob Cole','Hayden Lounsbery','Alyssa Just','Josh Frazier'];
-    document.write(juniors.map(name => `<article class="member-card"><img class="avatar" src="Juniors.jpg" alt="${name}"><p class="rank">Junior Firefighter</p><p class="name">${name}</p></article>`).join(''));
-  </script>
-</div>
+<div class="roster-grid" id="juniors-roster"></div>
+
+<script>
+  const memberData = [
+    ['Mike Beaverson','MikeB.jpg'],['Nick Brandt','NickB.jpg'],['Aiden Cole','AidenCole.jpg'],['Jeff Cole','JeffCole.jpg'],
+    ['Mat Frazier','MatFrazier.jpg'],['Russ Hazel','RussHazel.jpg'],['Gene Just','GeneJ.jpg'],['Josh Lewis','JoshL.jpg'],
+    ['Brenden Lounsbery','BrendenL.jpg'],['Mike Lounsbery','MikeL.jpg'],['Dan Nitz','HFD.png'],['Darwin Ryken','DarwinR.jpg'],
+    ['Mike Schlup','MikeS.jpg'],['Phil Serck','PhilS.jpg'],['Andy Stoffel','AndyS.jpg'],['Justin Teunissen','JustinT.jpg'],
+    ['Kate Teunissen','KateT.jpg'],["Doug Van't Hof",'DougV.jpg'],['Jim Wennblom','JimW.jpg']
+  ];
+  const juniorData = [
+    ['Jacob Cole','Jacob.jpg'],['Hayden Lounsbery','Hayden.jpg'],['Alyssa Just','Alyssa.jpg'],['Josh Frazier','JoshF.jpg']
+  ];
+  function renderRoster(targetId, people, rank) {
+    document.getElementById(targetId).innerHTML = people.map(([name, photo]) =>
+      `<article class="member-card"><img class="avatar" src="${photo}" alt="${name}"><p class="rank">${rank}</p><p class="name">${name}</p></article>`
+    ).join('');
+  }
+  renderRoster('members-roster', memberData, 'Firefighter');
+  renderRoster('juniors-roster', juniorData, 'Junior Firefighter');
+</script>
 <footer><p>© 2026 Hudson Fire Department</p></footer>
 </body>
 </html>
