@@ -30,143 +30,82 @@
   </style>
 </head>
 <body>
-  <header>
-    <h1>Hudson Fire Department</h1>
-    <p>Staff Spreadsheet Test Page</p>
-  </header>
-
-  <nav>
-    <a href="Staff.html">Current Staff Page</a>
-    <a href="index.html">Home</a>
-  </nav>
-
+  <header><h1>Hudson Fire Department</h1><p>Staff Spreadsheet Test Page</p></header>
+  <nav><a href="Staff.html">Current Staff Page</a><a href="index.html">Home</a></nav>
   <main>
-    <div class="notice">
-      This is a test page. Staff members are loaded from the published Google Sheet and are not changing the current Staff page.
-    </div>
-
+    <div class="notice">This is a test page. Staff members are loaded from the published Google Sheet and do not change the current Staff page.</div>
     <div class="section-banner"><img src="Comand.jpg" alt="Command Staff"><h2>Command Staff</h2></div>
     <div class="roster-grid" id="command-staff"></div>
-
     <div class="section-banner"><img src="Operations.jpg" alt="Operations"><h2>Operations</h2></div>
     <div class="roster-grid" id="operations"></div>
-
     <div class="section-banner"><img src="Members.jpg" alt="Members"><h2>Members</h2></div>
     <div class="roster-grid" id="members"></div>
-
     <div class="section-banner"><img src="Juniors.jpg" alt="Junior Firefighters"><h2>Junior Firefighters</h2></div>
     <div class="roster-grid" id="juniors"></div>
-
     <p id="status">Loading the staff spreadsheet...</p>
   </main>
-
   <footer><p>© 2026 Hudson Fire Department</p></footer>
 
   <script>
     const STAFF_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRzi2-vIHNjzidUWoKsgI9rcoZi_zl8WTwjoiPCtttPZ3kLRqkagp7oYVAJzdVfkuVBRo0gvaxWu3DQ/pub?gid=890444595&single=true&output=csv";
 
-    function parseCsv(csv) {
+    function parseDelimited(text) {
       const rows = [];
-      let row = [];
-      let value = "";
-      let quoted = false;
-
-      for (let i = 0; i < csv.length; i += 1) {
-        const character = csv[i];
-        const next = csv[i + 1];
-
-        if (character === '"' && quoted && next === '"') {
-          value += '"';
-          i += 1;
-        } else if (character === '"') {
-          quoted = !quoted;
-        } else if ((character === "," || character === "\t") && !quoted) {
-          row.push(value.trim());
-          value = "";
-        } else if ((character === "\n" || character === "\r") && !quoted) {
-          if (character === "\r" && next === "\n") i += 1;
-          row.push(value.trim());
-          if (row.some((cell) => cell !== "")) rows.push(row);
-          row = [];
-          value = "";
-        } else {
-          value += character;
-        }
+      let row = [], value = "", quoted = false;
+      for (let i = 0; i < text.length; i += 1) {
+        const c = text[i], next = text[i + 1];
+        if (c === '"' && quoted && next === '"') { value += '"'; i += 1; }
+        else if (c === '"') quoted = !quoted;
+        else if ((c === "," || c === "\t") && !quoted) { row.push(value); value = ""; }
+        else if ((c === "\n" || c === "\r") && !quoted) {
+          if (c === "\r" && next === "\n") i += 1;
+          row.push(value); if (row.some((cell) => cell.trim())) rows.push(row);
+          row = []; value = "";
+        } else value += c;
       }
-
-      if (value || row.length) {
-        row.push(value.trim());
-        if (row.some((cell) => cell !== "")) rows.push(row);
-      }
-
-      if (rows.length < 2) return [];
-      const headers = rows[0].map((header) => header.trim());
-
+      if (value || row.length) { row.push(value); if (row.some((cell) => cell.trim())) rows.push(row); }
+      if (!rows.length) return [];
+      const headers = rows[0].map((header) => header.replace(/^\uFEFF/, "").trim().toLowerCase());
       return rows.slice(1).map((cells) => {
         const person = {};
-        headers.forEach((header, index) => {
-          person[header] = (cells[index] || "").trim();
-        });
+        headers.forEach((header, i) => { person[header] = (cells[i] || "").trim(); });
         return person;
       });
     }
 
     function escapeHtml(value) {
-      return String(value || "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+      return String(value || "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
     }
 
     function renderCard(person) {
-      const photo = person["Profile Photo"];
-      const positions = person["Position"]
-        .split(";")
-        .map((position) => position.trim())
-        .filter(Boolean);
-
-      return `
-        <article class="member-card">
-          ${photo ? `<img class="avatar" src="${encodeURI(photo)}" alt="${escapeHtml(person["Member Name"])}">` : ""}
-          <ul class="positions">${positions.map((position) => `<li>${escapeHtml(position)}</li>`).join("")}</ul>
-          <p class="name">${escapeHtml(person["Member Name"])}</p>
-        </article>
-      `;
+      const positions = (person.position || "").split(/[;|]/).map((position) => position.trim()).filter(Boolean);
+      const photo = person["profile photo"];
+      return `<article class="member-card">${photo ? `<img class="avatar" src="${encodeURI(photo)}" alt="${escapeHtml(person["member name"])}">` : ""}<ul class="positions">${positions.map((position) => `<li>${escapeHtml(position)}</li>`).join("")}</ul><p class="name">${escapeHtml(person["member name"])}</p></article>`;
     }
 
     function renderArea(id, people) {
-      const target = document.getElementById(id);
-      target.innerHTML = people.length
-        ? people.map(renderCard).join("")
-        : '<p class="empty">No active staff members listed.</p>';
+      document.getElementById(id).innerHTML = people.length ? people.map(renderCard).join("") : '<p class="empty">No active staff members listed.</p>';
     }
 
     async function loadStaff() {
-      const response = await fetch(STAFF_SHEET_URL, { cache: "no-store" });
-      if (!response.ok) throw new Error("The published Google Sheet could not be loaded.");
+      const response = await fetch(STAFF_SHEET_URL + "&cache=" + Date.now());
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      const text = await response.text();
+      const rows = parseDelimited(text);
+      if (!rows.length) throw new Error("No rows were found in the published sheet.");
 
-      const rows = parseCsv(await response.text());
-      const activePeople = rows.filter((person) => {
-        const active = (person["Active"] || "").toLowerCase();
-        return active === "active" || active === "true" || active === "yes";
-      });
-
-      renderArea("command-staff", activePeople.filter((person) => person["Area"].toLowerCase() === "command staff"));
-      renderArea("operations", activePeople.filter((person) => person["Area"].toLowerCase() === "operations"));
-      renderArea("members", activePeople.filter((person) => person["Area"].toLowerCase() === "members"));
-      renderArea("juniors", activePeople.filter((person) => {
-        const area = person["Area"].toLowerCase();
-        return area === "juniors" || area === "junior firefighters";
-      }));
-
-      document.getElementById("status").textContent = `${activePeople.length} active staff row(s) loaded from Google Sheets.`;
+      const activePeople = rows.filter((person) => ["active", "true", "yes"].includes((person.active || "").toLowerCase()));
+      const area = (person) => (person.area || "").toLowerCase().trim();
+      renderArea("command-staff", activePeople.filter((person) => area(person) === "command staff"));
+      renderArea("operations", activePeople.filter((person) => area(person) === "operations"));
+      renderArea("members", activePeople.filter((person) => area(person) === "members"));
+      renderArea("juniors", activePeople.filter((person) => ["juniors", "junior firefighters"].includes(area(person))));
+      document.getElementById("status").textContent = `${activePeople.length} active staff row(s) loaded. Headers detected: ${Object.keys(rows[0]).join(", ")}`;
     }
 
     loadStaff().catch((error) => {
       console.error(error);
-      document.getElementById("status").textContent = "The staff spreadsheet could not be loaded. Confirm that it is published to the web.";
+      document.getElementById("status").textContent = "The staff spreadsheet could not be loaded: " + error.message;
     });
   </script>
 </body>
