@@ -22,8 +22,9 @@
     .member-card{background:#fff;border-radius:12px;padding:20px 12px;display:flex;flex-direction:column;align-items:center;text-align:center;box-shadow:0 2px 10px #00000017;transition:.25s}
     .member-card:hover{box-shadow:0 8px 28px #00000029;transform:translateY(-3px)}
     .avatar{width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid #b3000040;margin-bottom:12px;background:#e0e0e0}
-    .rank{font-size:.7rem;font-weight:800;color:#b30000;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+    .positions{list-style:none;padding:0;margin:8px 0 6px;display:flex;flex-direction:column;gap:4px;font-size:.7rem;font-weight:800;color:#b30000;text-transform:uppercase;letter-spacing:.08em}
     .name{font-size:.9rem;font-weight:600}
+    .status-message{max-width:1100px;margin:0 auto;padding:20px 20px 0;color:#555;text-align:center}
     footer{background:#222;color:#aaa;text-align:center;padding:20px;margin-top:24px;font-size:.85rem}
   </style>
 </head>
@@ -35,22 +36,10 @@
 </nav>
 
 <div class="section-banner"><img src="Comand.jpg" alt="Command Staff"><h2>Command Staff</h2></div>
-<div class="roster-grid">
-  <article class="member-card"><img class="avatar" src="JustinT.jpg" alt="Justin Teunissen"><p class="rank">Fire Chief</p><p class="name">Justin Teunissen</p></article>
-  <article class="member-card"><img class="avatar" src="MikeS.jpg" alt="Mike Schlup"><p class="rank">1st Assistant Chief</p><p class="name">Mike Schlup</p></article>
-  <article class="member-card"><img class="avatar" src="GeneJ.jpg" alt="Gene Just"><p class="rank">2nd Assistant Chief</p><p class="name">Gene Just</p></article>
-</div>
+<div class="roster-grid" id="command-staff-roster"></div>
 
 <div class="section-banner"><img src="Operations.jpg" alt="Operations"><h2>Operations</h2></div>
-<div class="roster-grid">
-  <article class="member-card"><img class="avatar" src="MikeL.jpg" alt="Mike Lounsbery"><p class="rank">Secretary</p><p class="name">Mike Lounsbery</p></article>
-  <article class="member-card"><img class="avatar" src="MikeS.jpg" alt="Mike Schlup"><p class="rank">Treasurer</p><p class="name">Mike Schlup</p></article>
-  <article class="member-card"><img class="avatar" src="MikeS.jpg" alt="Mike Schlup"><p class="rank">Safety Officer</p><p class="name">Mike Schlup</p></article>
-  <article class="member-card"><img class="avatar" src="JimW.jpg" alt="Jim Wennblom"><p class="rank">Truck Captain</p><p class="name">Jim Wennblom</p></article>
-  <article class="member-card"><img class="avatar" src="JoshL.jpg" alt="Josh Lewis"><p class="rank">Truck Captain</p><p class="name">Josh Lewis</p></article>
-  <article class="member-card"><img class="avatar" src="JoshL.jpg" alt="Josh Lewis"><p class="rank">Training Officer</p><p class="name">Josh Lewis</p></article>
-  <article class="member-card"><img class="avatar" src="BrendenL.jpg" alt="Brenden Lounsbery"><p class="rank">Training Officer</p><p class="name">Brenden Lounsbery</p></article>
-</div>
+<div class="roster-grid" id="operations-roster"></div>
 
 <div class="section-banner"><img src="Members.jpg" alt="Members"><h2>Members</h2></div>
 <div class="roster-grid" id="members-roster"></div>
@@ -58,24 +47,123 @@
 <div class="section-banner"><img src="Juniors.jpg" alt="Junior Firefighters"><h2>Junior Firefighters</h2></div>
 <div class="roster-grid" id="juniors-roster"></div>
 
+<p id="status-message" class="status-message">Loading staff roster...</p>
+
 <script>
-  const memberData = [
-    ['Mike Beaverson','MikeB.jpg'],['Nick Brandt','NickB.jpg'],['Aiden Cole','AidenCole.jpg'],['Jeff Cole','JeffCole.jpg'],
-    ['Mat Frazier','MatFrazier.jpg'],['Russ Hazel','RussHazel.jpg'],['Gene Just','GeneJ.jpg'],['Josh Lewis','JoshL.jpg'],
-    ['Brenden Lounsbery','BrendenL.jpg'],['Mike Lounsbery','MikeL.jpg'],['Dan Nitz','HFD.png'],['Darwin Ryken','DarwinR.jpg'],
-    ['Mike Schlup','MikeS.jpg'],['Phil Serck','PhilS.jpg'],['Andy Stoffel','AndyS.jpg'],['Justin Teunissen','JustinT.jpg'],
-    ['Kate Teunissen','KateT.jpg'],["Doug Van't Hof",'DougV.jpg'],['Jim Wennblom','JimW.jpg']
-  ];
-  const juniorData = [
-    ['Jacob Cole','Jacob.jpg'],['Hayden Lounsbery','Hayden.jpg'],['Alyssa Just','Alyssa.jpg'],['Josh Frazier','JoshF.jpg']
-  ];
-  function renderRoster(targetId, people, rank) {
-    document.getElementById(targetId).innerHTML = people.map(([name, photo]) =>
-      `<article class="member-card"><img class="avatar" src="${photo}" alt="${name}"><p class="rank">${rank}</p><p class="name">${name}</p></article>`
-    ).join('');
+  const STAFF_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRzi2-vIHNjzidUWoKsgI9rcoZi_zl8WTwjoiPCtttPZ3kLRqkagp7oYVAJzdVfkuVBRo0gvaxWu3DQ/pub?gid=890444595&single=true&output=csv";
+
+  function parseDelimited(text) {
+    const rows = [];
+    let row = [];
+    let value = "";
+    let quoted = false;
+
+    for (let i = 0; i < text.length; i += 1) {
+      const character = text[i];
+      const next = text[i + 1];
+
+      if (character === '"' && quoted && next === '"') {
+        value += '"';
+        i += 1;
+      } else if (character === '"') {
+        quoted = !quoted;
+      } else if ((character === "," || character === "\t") && !quoted) {
+        row.push(value.trim());
+        value = "";
+      } else if ((character === "\n" || character === "\r") && !quoted) {
+        if (character === "\r" && next === "\n") i += 1;
+        row.push(value.trim());
+        if (row.some((cell) => cell !== "")) rows.push(row);
+        row = [];
+        value = "";
+      } else {
+        value += character;
+      }
+    }
+
+    if (value || row.length) {
+      row.push(value.trim());
+      if (row.some((cell) => cell !== "")) rows.push(row);
+    }
+
+    if (rows.length < 2) return [];
+
+    const headers = rows[0].map((header) => header.replace(/^\uFEFF/, "").trim().toLowerCase());
+    return rows.slice(1).map((cells) => {
+      const person = {};
+      headers.forEach((header, index) => {
+        person[header] = (cells[index] || "").trim();
+      });
+      return person;
+    });
   }
-  renderRoster('members-roster', memberData, 'Firefighter');
-  renderRoster('juniors-roster', juniorData, 'Junior Firefighter');
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function normalizeArea(value) {
+    return (value || "").toLowerCase().trim().replace(/\s+/g, " ");
+  }
+
+  function matchesArea(person, names) {
+    return names.includes(normalizeArea(person.area));
+  }
+
+  function buildCard(person) {
+    const name = person["member name"] || person.name || "";
+    const photo = person["profile photo"] || person.photo || "";
+    const positionText = person.position || person["position "] || "";
+    const positions = positionText
+      .split(/[;|]/)
+      .map((position) => position.trim())
+      .filter(Boolean);
+
+    return `
+      <article class="member-card">
+        ${photo ? `<img class="avatar" src="${encodeURI(photo)}" alt="${escapeHtml(name)}">` : ""}
+        <ul class="positions">${positions.map((position) => `<li>${escapeHtml(position)}</li>`).join("")}</ul>
+        <p class="name">${escapeHtml(name)}</p>
+      </article>
+    `;
+  }
+
+  function renderArea(targetId, people) {
+    const target = document.getElementById(targetId);
+    if (!target) return;
+    target.innerHTML = people.length ? people.map(buildCard).join("") : '<p class="status-message">No active staff members in this section.</p>';
+  }
+
+  async function loadStaff() {
+    const response = await fetch(STAFF_SHEET_URL + "&cache=" + Date.now());
+    if (!response.ok) throw new Error("The staff sheet could not be loaded. Check the published CSV URL.");
+
+    const rows = parseDelimited(await response.text());
+    if (!rows.length) throw new Error("No rows were found in the published sheet.");
+
+    const activePeople = rows.filter((person) => {
+      const activeValue = (person.active || "").toLowerCase();
+      return ["active", "true", "yes"].includes(activeValue);
+    });
+
+    renderArea("command-staff-roster", activePeople.filter((person) => matchesArea(person, ["command staff", "command"])));
+    renderArea("operations-roster", activePeople.filter((person) => matchesArea(person, ["operations", "operation"])));
+    renderArea("members-roster", activePeople.filter((person) => matchesArea(person, ["members", "member", "firefighters", "firefighter"])));
+    renderArea("juniors-roster", activePeople.filter((person) => matchesArea(person, ["juniors", "junior", "junior firefighters", "junior firefighter"])));
+
+    const total = activePeople.length;
+    document.getElementById("status-message").textContent = `${total} active staff member(s) loaded from the Google Sheet.`;
+  }
+
+  loadStaff().catch((error) => {
+    console.error(error);
+    document.getElementById("status-message").textContent = "The staff spreadsheet could not be loaded: " + error.message;
+  });
 </script>
 <footer><p>© 2026 Hudson Fire Department</p></footer>
 </body>
