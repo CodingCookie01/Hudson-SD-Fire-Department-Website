@@ -67,7 +67,6 @@
             padding: 0 20px;
         }
 
-        /* View Toggle */
         .view-toggle {
             display: flex;
             gap: 10px;
@@ -96,7 +95,6 @@
             color: white;
         }
 
-        /* Donation Banner */
         .donation-banner {
             background: linear-gradient(135deg, #b30000, #8B0000);
             color: white;
@@ -139,7 +137,6 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.2);
         }
 
-        /* Calendar View */
         .calendar-container {
             background: white;
             border-radius: 8px;
@@ -250,7 +247,6 @@
             white-space: nowrap;
         }
 
-        /* List View */
         .event-list {
             background: white;
             border-radius: 8px;
@@ -364,7 +360,6 @@
             background: #e0e0e0;
         }
 
-        /* Filter Section */
         .filter-section {
             background: white;
             padding: 20px;
@@ -405,7 +400,6 @@
             color: white;
         }
 
-        /* How to Help Section */
         .how-to-help {
             background: white;
             padding: 30px;
@@ -426,7 +420,6 @@
             color: #555;
         }
 
-        /* Footer */
         footer {
             background: #222;
             color: white;
@@ -435,7 +428,6 @@
             margin-top: 50px;
         }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -486,7 +478,6 @@
             line-height: 1.6;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             header h1 {
                 font-size: 1.8em;
@@ -542,7 +533,6 @@
 </nav>
 
 <div class="container">
-    <!-- Donation Banner -->
     <div class="donation-banner">
         <h2>Support Our Community</h2>
         <p>Donate to the Hudson Fire Department to support emergency services, training, and community safety programs.</p>
@@ -556,7 +546,6 @@
         </div>
     </div>
 
-    <!-- View Toggle -->
     <div class="view-toggle">
         <button class="view-btn active" onclick="showCalendarView()">
             <i class="fas fa-calendar"></i> Calendar View
@@ -566,7 +555,6 @@
         </button>
     </div>
 
-    <!-- Filter Section -->
     <div class="filter-section">
         <h3>Filter Events</h3>
         <div class="filter-buttons">
@@ -577,7 +565,6 @@
         </div>
     </div>
 
-    <!-- Calendar View -->
     <div id="calendarView" class="calendar-container">
         <div class="calendar-header">
             <button onclick="previousMonth()">← Previous</button>
@@ -598,17 +585,15 @@
         </div>
     </div>
 
-    <!-- List View -->
     <div id="listView" class="event-list hidden"></div>
 
-    <!-- How to Help Section -->
     <div class="how-to-help">
         <h2>How Your Donation Helps</h2>
         <p>
-            Donating to the Hudson Fire Department helps support our mission to protect and serve the community by saving lives and preventing property damage through fire prevention and emergency medical services. Your contribution ensures that those in need are treated with compassion and integrity, with their care and protection as the highest priority.
+            Donating to the Hudson Fire Department helps support our mission to protect and serve the community by saving lives and preventing property damage through fire prevention and emergency response.
         </p>
         <p>
-            These funds help provide essential equipment, training, and resources that allow first responders to act quickly and effectively in emergencies. By donating, you are directly investing in the safety and well-being of your community, because <strong>our community is our protection</strong>.
+            These funds help provide essential equipment, training, and resources that allow first responders to act quickly and effectively in emergencies. By donating, you are directly investing in safety for our residents and first responders.
         </p>
         <p>
             <strong>Donations can be made in person at the station or during community events.</strong>
@@ -617,7 +602,6 @@
 
 </div>
 
-<!-- Donation Modal -->
 <div id="donationModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeDonationModal()">&times;</span>
@@ -631,7 +615,6 @@
     </div>
 </div>
 
-<!-- Event Details Modal -->
 <div id="eventModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeEventModal()">&times;</span>
@@ -652,8 +635,9 @@
 </footer>
 
 <script>
-    // Events Data
-    const events = [
+    const FUNDRAISER_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRzi2-vIHNjzidUWoKsgI9rcoZi_zl8WTwjoiPCtttPZ3kLRqkagp7oYVAJzdVfkuVBRo0gvaxWu3DQ/pub?gid=0&single=true&output=csv";
+
+    const fallbackEvents = [
         {
             id: 1,
             title: 'Annual Pancake Breakfast',
@@ -736,104 +720,229 @@
             location: 'Hudson Fire Department',
             description: 'Holiday season pancake breakfast. A seasonal tradition!',
             category: 'fundraiser'
-        },
-       
-        
+        }
     ];
 
+    function normalizeCategory(value) {
+        const raw = (value || '').toLowerCase().trim();
+        if (raw.includes('fund')) return 'fundraiser';
+        if (raw.includes('train')) return 'training';
+        if (raw.includes('community') || raw.includes('comunity')) return 'community';
+        return 'community';
+    }
+
+    function parseCsv(text) {
+        const rows = [];
+        let row = [];
+        let value = '';
+        let quoted = false;
+
+        for (let i = 0; i < text.length; i += 1) {
+            const character = text[i];
+            const next = text[i + 1];
+
+            if (character === '"' && quoted && next === '"') {
+                value += '"';
+                i += 1;
+            } else if (character === '"') {
+                quoted = !quoted;
+            } else if ((character === ',' || character === '\t') && !quoted) {
+                row.push(value.trim());
+                value = '';
+            } else if ((character === '\n' || character === '\r') && !quoted) {
+                if (character === '\r' && next === '\n') i += 1;
+                row.push(value.trim());
+                if (row.some((cell) => cell !== '')) rows.push(row);
+                row = [];
+                value = '';
+            } else {
+                value += character;
+            }
+        }
+
+        if (value || row.length) {
+            row.push(value.trim());
+            if (row.some((cell) => cell !== '')) rows.push(row);
+        }
+
+        if (rows.length < 2) return [];
+
+        const headers = rows[0].map((header) => header.replace(/^\uFEFF/, '').trim().toLowerCase());
+        return rows.slice(1).map((cells) => {
+            const item = {};
+            headers.forEach((header, index) => {
+                item[header] = (cells[index] || '').trim();
+            });
+            return item;
+        });
+    }
+
+    function parseDateValue(dateText, timeText) {
+        const cleanDate = (dateText || '').trim();
+        const cleanTime = (timeText || '').trim();
+
+        if (!cleanDate) return new Date();
+
+        if (cleanDate.includes('/')) {
+            const parts = cleanDate.split('/');
+            const month = Number(parts[0]) - 1;
+            const day = Number(parts[1]);
+            const year = Number(parts[2]);
+
+            if (cleanTime) {
+                const timeMatch = cleanTime.match(/(\d{1,2}):(\d{2}):(\d{2})\s*(AM|PM)?/i);
+                if (timeMatch) {
+                    let hours = Number(timeMatch[1]);
+                    const minutes = Number(timeMatch[2]);
+                    const isPM = /PM/i.test(timeMatch[4] || '');
+                    if (isPM && hours !== 12) hours += 12;
+                    if (!isPM && hours === 12) hours = 0;
+                    return new Date(year, month, day, hours, minutes);
+                }
+                return new Date(year, month, day);
+            }
+
+            return new Date(year, month, day);
+        }
+
+        const asIso = new Date(cleanDate + (cleanTime ? ' ' + cleanTime : ''));
+        return Number.isNaN(asIso.getTime()) ? new Date() : asIso;
+    }
+
+    function normalizeEventRow(row) {
+        const title = row.activity || row['activity name'] || row.title || row.event || row['event name'] || '';
+        const dateText = row.date || row['event date'] || row['start date'] || '';
+        const timeText = row['start time'] || row.time || row['event time'] || 'All Day';
+        const description = row.description || row['event description'] || '';
+        const location = row.location || row['event location'] || '';
+        const categoryValue = row['activity type'] || row.type || row.category || row['event type'] || '';
+
+        const parsedDate = parseDateValue(dateText, timeText);
+
+        return {
+            id: Math.random().toString(16).slice(2),
+            title: title.trim(),
+            date: parsedDate,
+            time: timeText || 'All Day',
+            location: location.trim(),
+            description: description.trim(),
+            category: normalizeCategory(categoryValue)
+        };
+    }
+
+    let events = [];
     let currentMonth = new Date();
     let filteredCategory = 'all';
 
-    // Initialize
-    document.addEventListener('DOMContentLoaded', function() {
+    async function loadFundraisers() {
+        try {
+            const response = await fetch(FUNDRAISER_SHEET_URL + '&cache=' + Date.now());
+            if (!response.ok) throw new Error('Unable to load event sheet.');
+
+            const csv = await response.text();
+            const rows = parseCsv(csv);
+            const parsed = rows.map(normalizeEventRow).filter((event) => event.title && !Number.isNaN(event.date.getTime()));
+
+            if (parsed.length) {
+                events = parsed;
+                currentMonth = new Date(parsed[0].date);
+            } else {
+                events = fallbackEvents;
+                currentMonth = new Date(fallbackEvents[0].date);
+            }
+        } catch (error) {
+            console.error(error);
+            events = fallbackEvents;
+            currentMonth = new Date(fallbackEvents[0].date);
+        }
+
         renderCalendar();
         renderEventList();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadFundraisers();
     });
 
     function renderCalendar() {
         const year = currentMonth.getFullYear();
         const month = currentMonth.getMonth();
-        
-        document.getElementById('monthYear').textContent = 
-            currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-        
+
+        document.getElementById('monthYear').textContent = currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
         const prevLastDay = new Date(year, month, 0);
-        
+
         const firstDayIndex = firstDay.getDay();
         const lastDayDate = lastDay.getDate();
         const prevLastDayDate = prevLastDay.getDate();
-        
+
         let html = '';
-        
-        // Previous month days
+
         for (let i = firstDayIndex - 1; i >= 0; i--) {
             html += `<div class="day other-month">${prevLastDayDate - i}</div>`;
         }
-        
-        // Current month days
+
         for (let day = 1; day <= lastDayDate; day++) {
             const date = new Date(year, month, day);
             const dayEvents = getEventsForDate(date);
             const hasEvent = dayEvents.length > 0;
-            
+
             let eventIndicator = '';
             if (hasEvent) {
                 eventIndicator = `<div class="day-event-indicator">${dayEvents[0].title.substring(0, 10)}</div>`;
             }
-            
+
             const eventClass = hasEvent ? 'has-event' : '';
             html += `<div class="day ${eventClass}" onclick="showDayEvents('${date.toDateString()}')">
                         <span class="day-number">${day}</span>
                         ${eventIndicator}
                     </div>`;
         }
-        
-        // Next month days
+
         for (let day = 1; day <= (7 - lastDay.getDay() - 1); day++) {
             html += `<div class="day other-month">${day}</div>`;
         }
-        
+
         document.getElementById('calendarDays').innerHTML = html;
     }
 
     function getEventsForDate(date) {
-        return events.filter(event => {
+        return events.filter((event) => {
             const eventDate = new Date(event.date);
             return eventDate.getFullYear() === date.getFullYear() &&
-                   eventDate.getMonth() === date.getMonth() &&
-                   eventDate.getDate() === date.getDate() &&
-                   (filteredCategory === 'all' || event.category === filteredCategory);
+                eventDate.getMonth() === date.getMonth() &&
+                eventDate.getDate() === date.getDate() &&
+                (filteredCategory === 'all' || event.category === filteredCategory);
         });
     }
 
     function showDayEvents(dateString) {
         const date = new Date(dateString);
         const dayEvents = getEventsForDate(date);
-        
+
         if (dayEvents.length > 0) {
-            const event = dayEvents[0];
-            showEventDetails(event);
+            showEventDetails(dayEvents[0].id);
         }
     }
 
     function renderEventList() {
         let filteredEvents = events;
         if (filteredCategory !== 'all') {
-            filteredEvents = events.filter(e => e.category === filteredCategory);
+            filteredEvents = events.filter((event) => event.category === filteredCategory);
         }
-        
+
         filteredEvents.sort((a, b) => a.date - b.date);
-        
+
         let html = '';
-        filteredEvents.forEach(event => {
+        filteredEvents.forEach((event) => {
             const eventDate = new Date(event.date);
             const month = eventDate.toLocaleDateString('en-US', { month: 'short' });
             const day = eventDate.getDate();
-            
+
             html += `
-                <div class="event-item" onclick="showEventDetails(${event.id})">
+                <div class="event-item" onclick="showEventDetails('${event.id}')">
                     <div class="event-date">
                         <div class="event-date-month">${month}</div>
                         <div class="event-date-day">${day}</div>
@@ -847,7 +956,7 @@
                             <i class="fas fa-clock"></i> ${event.time}
                         </div>
                         <div class="event-actions">
-                            <button class="event-btn add-to-calendar" onclick="event.stopPropagation(); addEventToCalendar(${event.id})">
+                            <button class="event-btn add-to-calendar" onclick="event.stopPropagation(); addEventToCalendar('${event.id}')">
                                 <i class="fas fa-calendar-plus"></i> Add to Calendar
                             </button>
                         </div>
@@ -855,21 +964,19 @@
                 </div>
             `;
         });
-        
+
         document.getElementById('listView').innerHTML = html;
     }
 
     function showEventDetails(eventId) {
-        const event = events.find(e => e.id === eventId);
+        const event = events.find((item) => item.id === eventId);
         if (!event) return;
-        
+
         document.getElementById('modalEventTitle').textContent = event.title;
-        document.getElementById('modalEventDateTime').textContent = 
-            event.date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + 
-            ' at ' + event.time;
+        document.getElementById('modalEventDateTime').textContent = new Date(event.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) + ' at ' + event.time;
         document.getElementById('modalEventLocation').textContent = event.location;
         document.getElementById('modalEventDescription').textContent = event.description;
-        
+
         document.getElementById('eventModal').style.display = 'block';
         window.currentEventId = eventId;
     }
@@ -887,23 +994,21 @@
     }
 
     function addEventToCalendar(eventId) {
-        const event = events.find(e => e.id === eventId);
+        const event = events.find((item) => item.id === eventId);
         if (!event) return;
-        
         addEventToDeviceCalendar(event);
     }
 
     function addEventToDeviceCalendar(event = null) {
         if (!event) {
-            event = events.find(e => e.id === window.currentEventId);
+            event = events.find((item) => item.id === window.currentEventId);
         }
-        
+
         if (!event) return;
-        
-        const startDate = event.date;
-        const endDate = event.endDate || event.date;
-        
-        // Create iCal format
+
+        const startDate = new Date(event.date);
+        const endDate = event.endDate || new Date(startDate.getTime() + (60 * 60 * 1000));
+
         const icalContent = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Hudson Fire Department//Events//EN
@@ -919,19 +1024,18 @@ DESCRIPTION:${event.description}
 LOCATION:${event.location}
 END:VEVENT
 END:VCALENDAR`;
-        
-        // Create download
+
         const blob = new Blob([icalContent], { type: 'text/calendar;charset=utf-8' });
         const link = document.createElement('a');
         const url = URL.createObjectURL(blob);
         link.setAttribute('href', url);
         link.setAttribute('download', `${event.title.replace(/\s+/g, '_')}.ics`);
         link.style.visibility = 'hidden';
-        
+
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        
+
         alert('Event added! Check your downloads folder and import the .ics file to your calendar app.');
     }
 
@@ -942,7 +1046,7 @@ END:VCALENDAR`;
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
         const seconds = String(date.getSeconds()).padStart(2, '0');
-        
+
         return `${year}${month}${day}T${hours}${minutes}${seconds}`;
     }
 
@@ -972,26 +1076,26 @@ END:VCALENDAR`;
 
     function filterEvents(category) {
         filteredCategory = category;
-        
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
-        
+
+        document.querySelectorAll('.filter-btn').forEach((btn) => btn.classList.remove('active'));
+        const targetButton = Array.from(document.querySelectorAll('.filter-btn')).find((btn) => btn.textContent.toLowerCase().includes(category) || category === 'all');
+        if (targetButton) targetButton.classList.add('active');
+
         renderCalendar();
         renderEventList();
     }
 
-    // Close modals when clicking outside
     window.onclick = function(event) {
         const donationModal = document.getElementById('donationModal');
         const eventModal = document.getElementById('eventModal');
-        
+
         if (event.target === donationModal) {
             donationModal.style.display = 'none';
         }
         if (event.target === eventModal) {
             eventModal.style.display = 'none';
         }
-    }
+    };
 </script>
 
 </body>
